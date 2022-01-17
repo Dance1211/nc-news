@@ -90,7 +90,7 @@ describe('/api/articles/:article_id', () => {
         .get('/api/articles/not_a_number')
         .expect(400)
         .then((res) => {
-          const {msg} = res.body;
+          const { msg } = res.body;
           expect(msg).toBe("Invalid article id");
         });
     });
@@ -99,9 +99,60 @@ describe('/api/articles/:article_id', () => {
         .get('/api/articles/4000') //ID possible but too big for the test data
         .expect(404)
         .then((res) => {
-          const {msg} = res.body;
+          const { msg } = res.body;
           expect(msg).toBe("Article not found");
         })
     });
   });
-})
+
+  describe('PATCH', () => {
+    test('Update the votes of the article and return it as an object', () => {
+      return request(app)
+        .patch('/api/articles/1')
+        .send({ inc_votes: 1 })
+        .expect(200)
+        .then((res) => {
+          const { article } = res.body;
+          expect(article).toEqual({
+            author: "butter_bridge",
+            title: "Living in the shadow of a great man",
+            article_id: 1,
+            body: "I find this existence challenging",
+            topic: "mitch",
+            created_at: "2020-07-09T20:11:00.000Z",
+            votes: 101, //Updated from 100 with 1 more vote
+          });
+        });
+    });
+    test('Throw a 400 error for an invalid article_id', () => {
+      return request(app)
+        .patch('/api/articles/first')
+        .send({ inc_votes: 1 })
+        .expect(400)
+        .then((res) => {
+          const { msg } = res.body;
+          expect(msg).toBe("Invalid article id");
+        });
+    });
+    test('Return a 404 for a valid id format but not in database', () => {
+      return request(app)
+        .patch('/api/articles/9878')
+        .send({ inc_votes: 1 })
+        .expect(404)
+        .then((res) => {
+          const { msg } = res.body;
+          expect(msg).toBe("Article not found");
+        });
+    });
+    test('Return a 400 for an illformed body', () => {
+      return request(app)
+        .patch('/api/articles/1')
+        .send({inc_vote: 1}) // misspelling of inc_votes
+        .expect(400)
+        .then((res) => {
+          const {msg} = res.body;
+          expect(msg).toBe("Ill-formed body");
+        })
+    });
+  });
+});

@@ -13,14 +13,41 @@ module.exports.selectSingleArticle = async (article_id) => {
       GROUP BY articles.article_id;
     `, [article_id]);
 
-    // Check the article exists. Return a 404 error otherwise.
-    if (article.rows[0]){
-      return article.rows[0];
-    } else {
-      return Promise.reject({msg: "Article not found", status: 404});
-    }
+    return articleIfExists(article);
+
   } catch (err) {
     // Catch miscellaneous errors
-    return Promise.reject(err); 
+    return Promise.reject(err);
   }
 };
+
+module.exports.updateArticleVotes = async (article_id, inc_votes) => {
+  // Updates the given article in the articles table with new votes.
+  try {
+    const article = await db.query(`
+      UPDATE articles
+      SET votes = (votes + $2)
+      WHERE article_id = $1
+      RETURNING *;
+    `, [article_id, inc_votes]);
+
+    return articleIfExists(article);
+
+  } catch (err) {
+    console.log(err);
+    return Promise.reject(err);
+  }
+}
+
+function articleIfExists(articleArray) {
+  // Returns the full array if there are multiple articles,
+  // Return a single article if there is just one
+  // Returns a 404 if array is empty
+  if (articleArray.rows.length > 1) {
+    return articleArray.rows;
+  } else if (articleArray.rows.length == 1) {
+    return articleArray.rows[0];
+  } else {
+    return Promise.reject({ msg: "Article not found", status: 404 });
+  }
+}
