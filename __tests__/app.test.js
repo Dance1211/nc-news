@@ -42,3 +42,25 @@ describe('/api', () => {
     });
   });
 });
+
+describe('/api/topics', () => {
+  describe('GET', () => {
+    test('Returns a topics array of the topics with 200 status', () => {
+      return request(app)
+        .get('/api/topics')
+        .expect(200)
+        .then((res) => {
+          const {topics} = res.body;
+          // Test topics file has 3 topics
+          expect(topics).toHaveLength(3);
+          // Expect the correct format for each topic
+          topics.forEach((topic) => {
+            expect(topic).toEqual({
+              slug: expect.any(String),
+              description: expect.any(String)
+            });
+          })
+        })
+    })
+  });
+})

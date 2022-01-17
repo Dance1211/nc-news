@@ -1,5 +1,10 @@
 module.exports.serverError = (err, req, res, next) => {
-  res.status(500).send({msg: "Internal server error"});
+  if (err.status && err.msg) {
+    res.status(err.status)
+  } else {
+    res.status(500).send({msg: "Internal server error"});
+    console.log("Error:", err);
+  }
 }
 
 module.exports.invalidEndpointError = (req, res) => {

@@ -7,7 +7,6 @@ app.use(express.json());
 
 app.use('/api', apiRouter);
 
-
 // Handle errors
 app.use(errors.serverError);
 
