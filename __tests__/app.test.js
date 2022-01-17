@@ -124,7 +124,7 @@ describe('/api/articles/:article_id', () => {
           });
         });
     });
-    test('Throw a 400 error for an invalid article_id', () => {
+    test('Return a 400 error for an invalid article_id', () => {
       return request(app)
         .patch('/api/articles/first')
         .send({ inc_votes: 1 })
@@ -152,6 +152,16 @@ describe('/api/articles/:article_id', () => {
         .then((res) => {
           const {msg} = res.body;
           expect(msg).toBe("Ill-formed body");
+        })
+    });
+    test('Return a 400 for a non-integer inc_votes', () => {
+      return request(app)
+        .patch('/api/articles/1')
+        .send({inc_votes: -1.99}) // Negative inc_votes
+        .expect(400)
+        .then((res) => {
+          const {msg} = res.body;
+          expect(msg).toBe("inc_votes is not an integer");
         })
     });
   });
