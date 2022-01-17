@@ -1,4 +1,4 @@
-const db = require("../connection");
+const format = require('pg-format');
 const {
   USER_USERNAME_LENGTH,
   USER_AVATAR_URL_LENGTH,
@@ -7,6 +7,9 @@ const {
   TOPIC_DESCRIPTION_LENGTH,
   ARTICLE_TITLE_LENGTH,
   COMMENT_BODY_LENGTH } = require("../constants");
+const {
+  formatUsersData, formatTopicsData, formatArticlesData, formatCommentData } = require('./util');
+const db = require("../connection");
 
 const seed = async (data) => {
   const { articleData, commentData, topicData, userData } = data;
@@ -17,8 +20,6 @@ const seed = async (data) => {
   * 3 COMMENT
   * 
   * TODO: 
-  * DELETE CURRENT TABLES
-  * CREATE TABLES
   * POPULATE TABLES
   */
 
@@ -60,10 +61,44 @@ const seed = async (data) => {
       author VARCHAR(${USER_USERNAME_LENGTH}) REFERENCES users(username),
       article_id INT REFERENCES articles(article_id),
       votes INT DEFAULT 0,
-      created_ad TIMESTAMP DEFAULT Now()
+      created_at TIMESTAMP DEFAULT Now()
     )
   `);
 
+  // Seed tables
+  // Create correctly formatted queries 
+  const insertUsersData = (userData) => format(`
+    INSERT INTO users (username, name, avatar_url)
+    VALUES %L
+    RETURNING *;
+  `, formatUsersData(userData));
+
+  const insertTopicsData = (topicData) => format(`
+    INSERT INTO topics (slug, description)
+    VALUES %L
+    RETURNING *;
+  `, formatTopicsData(topicData));
+
+  const insertArticlesData = (articleData) => format(`
+    INSERT INTO articles (title, body, votes, topic, author, created_at)
+    VALUES %L
+    RETURNING *;
+  `, formatArticlesData(articleData));
+
+  const insertCommentsData = (commentData) => format(`
+    INSERT INTO comments (body, article_id, votes, author, created_at)
+    VALUES %L
+    RETURNING *;
+  `, formatCommentData(commentData));
+  
+  // Run insertion queries
+  const users = (await db.query(insertUsersData(userData)));
+  const topics = (await db.query(insertTopicsData(topicData)));
+  const articles = (await db.query(insertArticlesData(articleData)));
+  const comments = (await db.query(insertCommentsData(commentData)));
+
+  // Return all data
+  return {users, topics, articles, comments};
 };
 
 module.exports = seed;
