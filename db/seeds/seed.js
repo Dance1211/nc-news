@@ -92,10 +92,10 @@ const seed = async (data) => {
   `, formatCommentData(commentData));
   
   // Run insertion queries
-  const users = (await db.query(insertUsersData(userData)));
-  const topics = (await db.query(insertTopicsData(topicData)));
-  const articles = (await db.query(insertArticlesData(articleData)));
-  const comments = (await db.query(insertCommentsData(commentData)));
+  const users = (await db.query(insertUsersData(userData))).rows;
+  const topics = (await db.query(insertTopicsData(topicData))).rows;
+  const articles = (await db.query(insertArticlesData(articleData))).rows;
+  const comments = (await db.query(insertCommentsData(commentData))).rows;
 
   // Return all data
   return {users, topics, articles, comments};
