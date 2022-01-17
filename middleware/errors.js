@@ -1,9 +1,8 @@
 module.exports.serverError = (err, req, res, next) => {
   if (err.status && err.msg) {
-    res.status(err.status)
+    res.status(err.status).send({msg: err.msg});
   } else {
     res.status(500).send({msg: "Internal server error"});
-    console.log("Error:", err);
   }
 }
 
