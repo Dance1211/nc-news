@@ -1,23 +1,21 @@
 module.exports.formatUsersData = (userData) => {
-  return userData.map(({username, name, avatar_url}) => {
-    return [username, name, avatar_url];
-  });
+  return mapData(userData, ["username", "name", "avatar_url"]);
 }
 
 module.exports.formatTopicsData = (topicData) => {
-  return topicData.map(({slug, description}) => {
-    return [slug, description];
-  });
+  return mapData(topicData, ["slug", "description"]);
 }
 
 module.exports.formatArticlesData = (articleData) => {
-  return articleData.map(({title, body, votes, topic, author, created_at}) => {
-    return [title, body, votes, topic, author, created_at];
-  });
+  return mapData(articleData, ["title", "body", "votes", "topic", "author", "created_at"]);
 }
 
 module.exports.formatCommentData = (commentData) => {
-  return commentData.map(({body, article_id, votes, author, created_at}) => {
-    return [body, article_id, votes, author, created_at];
-  });
+  return mapData(commentData, ["body", "article_id", "votes", "author", "created_at"]);
+}
+
+function mapData(dataArr, keyArr) {
+  return dataArr.map(data => {
+    return keyArr.map(key => data[key]);
+  })
 }
