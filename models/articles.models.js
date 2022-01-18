@@ -1,5 +1,19 @@
 const db = require("../db/connection");
 
+module.exports.selectArticles = async (queries) => {
+  try {
+    const articles = await db.query(`
+      SELECT articles.article_id, title, articles.author, topic, articles.created_at, articles.votes, COUNT(*)::INT as comment_count
+      FROM articles
+      LEFT JOIN comments ON articles.article_id = comments.article_id
+      GROUP BY articles.article_id;
+    `)
+    return articles.rows;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+}
+
 module.exports.selectSingleArticle = async (article_id) => {
   // Return all the infomation regarding a specific article
   // given by article_id along the count of comments associated with it.

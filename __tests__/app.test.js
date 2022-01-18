@@ -43,27 +43,30 @@ describe('/api', () => {
   });
 });
 
-describe('/api/topics', () => {
+describe('/api/articles', () => {
   describe('GET', () => {
-    test('Returns a topics array of the topics with 200 status', () => {
+    test('Returns all the article objects wtih status 200', () => {
       return request(app)
-        .get('/api/topics')
+        .get("/api/articles")
         .expect(200)
         .then((res) => {
-          const { topics } = res.body;
-          // Test topics file has 3 topics
-          expect(topics).toHaveLength(3);
-          // Expect the correct format for each topic
-          topics.forEach((topic) => {
-            expect(topic).toEqual({
-              slug: expect.any(String),
-              description: expect.any(String)
+          const {articles} = res.body;
+          expect(articles).toHaveLength(12);
+          articles.forEach(article => {
+            expect(article).toEqual({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(Number)
             });
-          })
+          });
         })
-    })
+    });
   });
-})
+});
 
 describe('/api/articles/:article_id', () => {
   describe('GET', () => {
@@ -166,3 +169,25 @@ describe('/api/articles/:article_id', () => {
     });
   });
 });
+
+describe('/api/topics', () => {
+  describe('GET', () => {
+    test('Returns a topics array of the topics with 200 status', () => {
+      return request(app)
+        .get('/api/topics')
+        .expect(200)
+        .then((res) => {
+          const { topics } = res.body;
+          // Test topics file has 3 topics
+          expect(topics).toHaveLength(3);
+          // Expect the correct format for each topic
+          topics.forEach((topic) => {
+            expect(topic).toEqual({
+              slug: expect.any(String),
+              description: expect.any(String)
+            });
+          })
+        })
+    })
+  });
+})

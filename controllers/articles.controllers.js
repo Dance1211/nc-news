@@ -1,5 +1,16 @@
-const { selectSingleArticle, updateArticleVotes } = require("../models/articles.models");
+const { selectSingleArticle, updateArticleVotes, selectArticles } = require("../models/articles.models");
 const { isValidPositiveInteger, hasSpecificPropertyOnly } = require("../util/validation");
+
+
+module.exports.getArticles = (req, res, next) => {
+  selectArticles()
+    .then((articles) => {
+      res.status(200).send({articles});
+    })
+    .catch((err) => {
+      next(err);
+    })
+}
 
 module.exports.getSingleArticle = (req, res, next) => {
   const { article_id } = req.params;
