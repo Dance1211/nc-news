@@ -36,6 +36,7 @@ module.exports.selectArticles = async ({ sort_by = "created_at", order = "DESC",
     if (topic) await checkExists(db, "topics", "slug", topic, `Topic ${topic} not found`);
 
     return articles.rows;
+    
   } catch (err) {
     return Promise.reject(err);
   }
@@ -54,7 +55,7 @@ module.exports.selectSingleArticle = async (article_id) => {
       GROUP BY articles.article_id;
     `, [article_id]);
 
-    return articleIfExists(article);
+    return article.rows[0];
 
   } catch (err) {
     // Catch miscellaneous errors
@@ -72,7 +73,7 @@ module.exports.updateArticleVotes = async (article_id, inc_votes) => {
       RETURNING *;
     `, [article_id, inc_votes]);
 
-    return articleIfExists(article);
+    return article.rows[0];
 
   } catch (err) {
     console.log(err);
@@ -91,16 +92,6 @@ module.exports.selectCommentsByArticleId = async (article_id) => {
     return comments.rows;
   } catch (err) {
     return Promise.reject(err);
-  }
-}
-
-function articleIfExists(articleArray) {
-  // Return a single article if there is just one
-  // Returns a 404 if array is empty
-  if (articleArray.rows.length) {
-    return articleArray.rows[0];
-  } else {
-    return Promise.reject({ msg: "Article not found", status: 404 });
   }
 }
 
