@@ -309,12 +309,29 @@ describe('/api/articles/:article_id/comments', () => {
     });
     test('Return a 400 if the body is malformed', () => {
       return request(app)
-      .post('/api/articles/1/comments')
-      .send({ helpme: "It's all gone wrong", whoops: "YOWZA!!" })
-      .expect(400)
-      .then((res) => {
-        expect(res.body.msg).toBe("Malformed body");
-      })
+        .post('/api/articles/1/comments')
+        .send({ helpme: "It's all gone wrong", whoops: "YOWZA!!" })
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Malformed body");
+        })
+    });
+  });
+});
+
+describe('/api/comments/:comment_id', () => {
+  describe('DELETE', () => {
+    test('Delete the given comment', () => {
+      return request(app)
+        .delete('/api/comments/2')
+        .expect(204)
+        .then(() => {
+          return request(app)
+            .get('/api/articles/1/comments')
+            .then((res) => {
+              expect(res.body.comments).toHaveLength(10)
+            })
+        })
     });
   });
 });

@@ -61,7 +61,6 @@ module.exports.postCommentByArticleId = (req, res, next) => {
   const {article_id} = req.params;
   const {username, body} = req.body;
 
-  console.log(req.body);
   if (!username || !body || Object.keys(req.body).length != 2) {
     next({status: 400, msg: "Malformed body"});
     return;
