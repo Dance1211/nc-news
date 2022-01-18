@@ -15,7 +15,6 @@ module.exports.getArticles = (req, res, next) => {
 module.exports.getSingleArticle = (req, res, next) => {
   const { article_id } = req.params;
 
-
   selectSingleArticle(article_id)
     .then((article) => {
       res.status(200).send({ article });

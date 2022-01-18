@@ -122,7 +122,7 @@ describe('/api/articles', () => {
         .get("/api/articles?topic=mitch")
         .expect(200)
         .then((res) => {
-          const {articles} = res.body;
+          const { articles } = res.body;
           expect(articles).toHaveLength(11);
           articles.forEach(article => {
             expect(article.topic).toBe('mitch');
@@ -134,7 +134,7 @@ describe('/api/articles', () => {
         .get("/api/articles?topic=INVALIDASCANBE")
         .expect(404)
         .then((res) => {
-          expect(res.body.msg).toBe("INVALIDASCANBE not found")
+          expect(res.body.msg).toBe("Topic INVALIDASCANBE not found")
         })
     })
     test('Returns a 200 if an existing topic gives an empty array', () => {
@@ -257,7 +257,7 @@ describe('/api/articles/:article_id/comments', () => {
         .get('/api/articles/1/comments')
         .expect(200)
         .then((res) => {
-          const {comments} = res.body;
+          const { comments } = res.body;
           expect(comments).toHaveLength(11);
           comments.forEach(comment => {
             expect(comment).toEqual({
@@ -270,6 +270,15 @@ describe('/api/articles/:article_id/comments', () => {
           })
         })
     });
+    test('Returns a status 404 if the article_id does not exist', () => {
+      return request(app)
+        .get('/api/articles/1294/comments')
+        .expect(404)
+        .then((res) => {
+          const { msg } = res.body;
+          expect(msg).toBe("Article not found");
+        })
+    })
   });
 });
 

@@ -31,9 +31,9 @@ module.exports.selectArticles = async ({ sort_by = "created_at", order = "DESC",
       GROUP BY articles.article_id
       ${sortByQuery};
     `, queries);
-    
+
     // Throw a 404 if the topic doesn't exists.
-    if (topic) await checkExists(db, "topics", "slug", topic);
+    if (topic) await checkExists(db, "topics", "slug", topic, `Topic ${topic} not found`);
 
     return articles.rows;
   } catch (err) {
@@ -81,12 +81,17 @@ module.exports.updateArticleVotes = async (article_id, inc_votes) => {
 }
 
 module.exports.selectCommentsByArticleId = async (article_id) => {
-  const comments = await db.query(`
-    SELECT comment_id, votes, created_at, author, body
-    FROM comments
-    WHERE article_id = $1;
-  `, [article_id]);
-  return comments.rows;
+  try {
+    const comments = await db.query(`
+      SELECT comment_id, votes, created_at, author, body
+      FROM comments
+      WHERE article_id = $1;
+    `, [article_id]);
+    await checkExists(db, 'articles', 'article_id', article_id, `Article not found`);
+    return comments.rows;
+  } catch (err) {
+    return Promise.reject(err);
+  }
 }
 
 function articleIfExists(articleArray) {
