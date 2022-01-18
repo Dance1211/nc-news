@@ -1,4 +1,4 @@
-const { getSingleArticle, patchArticle, getArticles, getCommentsByArticleId } = require('../controllers/articles.controllers');
+const { getSingleArticle, patchArticle, getArticles, getCommentsByArticleId, postCommentByArticleId } = require('../controllers/articles.controllers');
 const { validateArticleId } = require('../middleware/validation');
 
 const articlesRouter = require('express').Router();
@@ -21,6 +21,6 @@ articlesRouter
 articlesRouter
   .route('/:article_id/comments')
   .get(getCommentsByArticleId)
-  .post((req, res) => res.status(501).send({msg: "Unimplemented"}));
+  .post(postCommentByArticleId);
 
 module.exports = articlesRouter;

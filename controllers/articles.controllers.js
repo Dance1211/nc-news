@@ -1,4 +1,4 @@
-const { selectSingleArticle, updateArticleVotes, selectArticles, selectCommentsByArticleId } = require("../models/articles.models");
+const { selectSingleArticle, updateArticleVotes, selectArticles, selectCommentsByArticleId, insertCommentByArticleId } = require("../models/articles.models");
 const { isValidPositiveInteger, hasSpecificPropertyOnly } = require("../util/validation");
 
 
@@ -51,6 +51,25 @@ module.exports.getCommentsByArticleId = (req, res, next) => {
   selectCommentsByArticleId(article_id)
     .then((comments) => {
       res.status(200).send({ comments });
+    })
+    .catch((err) => {
+      next(err);
+    })
+}
+
+module.exports.postCommentByArticleId = (req, res, next) => {
+  const {article_id} = req.params;
+  const {username, body} = req.body;
+
+  console.log(req.body);
+  if (!username || !body || Object.keys(req.body).length != 2) {
+    next({status: 400, msg: "Malformed body"});
+    return;
+  }
+
+  insertCommentByArticleId(article_id, username, body)
+    .then((comment) => {
+      res.status(200).send({comment});
     })
     .catch((err) => {
       next(err);

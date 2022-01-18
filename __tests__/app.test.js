@@ -280,6 +280,43 @@ describe('/api/articles/:article_id/comments', () => {
         })
     })
   });
+  describe('POST', () => {
+    test('Return a 200 and the new comment ', () => {
+      return request(app)
+        .post('/api/articles/1/comments')
+        .send({ username: "rogersop", body: "Yo. I want to make a post" })
+        .expect(200)
+        .then((res) => {
+          const { comment } = res.body;
+          expect(comment).toEqual({
+            comment_id: 19,
+            body: "Yo. I want to make a post",
+            votes: 0,
+            author: "rogersop",
+            article_id: 1,
+            created_at: expect.any(String)
+          });
+        })
+    });
+    test('Return a 404 if body has nonexistant username', () => {
+      return request(app)
+        .post('/api/articles/1/comments')
+        .send({ username: "mysteryman", body: "Who am I?" })
+        .expect(404)
+        .then((res) => {
+          expect(res.body.msg).toBe("username not found");
+        })
+    });
+    test('Return a 400 if the body is malformed', () => {
+      return request(app)
+      .post('/api/articles/1/comments')
+      .send({ helpme: "It's all gone wrong", whoops: "YOWZA!!" })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Malformed body");
+      })
+    });
+  });
 });
 
 describe('/api/topics', () => {

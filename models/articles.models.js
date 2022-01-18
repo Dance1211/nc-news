@@ -36,7 +36,7 @@ module.exports.selectArticles = async ({ sort_by = "created_at", order = "DESC",
     if (topic) await checkExists(db, "topics", "slug", topic, `Topic ${topic} not found`);
 
     return articles.rows;
-    
+
   } catch (err) {
     return Promise.reject(err);
   }
@@ -90,6 +90,22 @@ module.exports.selectCommentsByArticleId = async (article_id) => {
     `, [article_id]);
     await checkExists(db, 'articles', 'article_id', article_id, `Article not found`);
     return comments.rows;
+  } catch (err) {
+    return Promise.reject(err);
+  }
+}
+
+module.exports.insertCommentByArticleId = async (article_id, username, body) => {
+  try {
+    await checkExists(db, 'users', 'username', username, "username not found");
+    const comment = await db.query(`
+      INSERT INTO comments
+      (article_id, author, body)
+      VALUES
+      ($1, $2, $3)
+      RETURNING *;
+    `, [article_id, username, body]);
+    return comment.rows[0];
   } catch (err) {
     return Promise.reject(err);
   }
