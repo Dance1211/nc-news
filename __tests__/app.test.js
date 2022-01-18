@@ -250,6 +250,29 @@ describe('/api/articles/:article_id', () => {
   });
 });
 
+describe('/api/articles/:article_id/comments', () => {
+  describe('GET', () => {
+    test('Returns an array of comments with status 200', () => {
+      return request(app)
+        .get('/api/articles/1/comments')
+        .expect(200)
+        .then((res) => {
+          const {comments} = res.body;
+          expect(comments).toHaveLength(11);
+          comments.forEach(comment => {
+            expect(comment).toEqual({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String)
+            });
+          })
+        })
+    });
+  });
+});
+
 describe('/api/topics', () => {
   describe('GET', () => {
     test('Returns a topics array of the topics with 200 status', () => {

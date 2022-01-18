@@ -1,8 +1,13 @@
-const { getSingleArticle, patchArticle, getArticles } = require('../controllers/articles.controllers');
+const { getSingleArticle, patchArticle, getArticles, getCommentsByArticleId } = require('../controllers/articles.controllers');
+const { validateArticleId } = require('../middleware/validation');
 
 const articlesRouter = require('express').Router();
 
-// api stuff here
+// Api stuff here
+
+// Throw a 400 error for invalid article_id formats
+articlesRouter
+  .use('/:article_id', validateArticleId) 
 
 articlesRouter
   .route('/')
@@ -12,5 +17,10 @@ articlesRouter
   .route('/:article_id')
   .get(getSingleArticle)
   .patch(patchArticle);
+
+articlesRouter
+  .route('/:article_id/comments')
+  .get(getCommentsByArticleId)
+  .post((req, res) => res.status(501).send({msg: "Unimplemented"}));
 
 module.exports = articlesRouter;

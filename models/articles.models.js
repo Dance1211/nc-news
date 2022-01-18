@@ -80,6 +80,15 @@ module.exports.updateArticleVotes = async (article_id, inc_votes) => {
   }
 }
 
+module.exports.selectCommentsByArticleId = async (article_id) => {
+  const comments = await db.query(`
+    SELECT comment_id, votes, created_at, author, body
+    FROM comments
+    WHERE article_id = $1;
+  `, [article_id]);
+  return comments.rows;
+}
+
 function articleIfExists(articleArray) {
   // Return a single article if there is just one
   // Returns a 404 if array is empty
