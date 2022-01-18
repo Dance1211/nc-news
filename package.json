@@ -22,6 +22,7 @@
   "homepage": "https://github.com/northcoders/be-nc-news#readme",
   "devDependencies": {
     "jest": "^27.4.7",
+    "jest-sorted": "^1.0.14",
     "nodemon": "^2.0.15",
     "supertest": "^6.2.1"
   },
@@ -30,5 +31,10 @@
     "express": "^4.17.2",
     "pg": "^8.7.1",
     "pg-format": "^1.0.4"
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "jest-sorted"
+    ]
   }
 }

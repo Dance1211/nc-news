@@ -50,7 +50,7 @@ describe('/api/articles', () => {
         .get("/api/articles")
         .expect(200)
         .then((res) => {
-          const {articles} = res.body;
+          const { articles } = res.body;
           expect(articles).toHaveLength(12);
           articles.forEach(article => {
             expect(article).toEqual({
@@ -65,6 +65,86 @@ describe('/api/articles', () => {
           });
         })
     });
+    test('Sorts the data by date descending by default', () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((res) => {
+          const { articles } = res.body;
+          expect(articles).toBeSortedBy('created_at', { descending: true });
+        })
+    });
+    test('Sorts the data by date ascending given the ASC order query', () => {
+      return request(app)
+        .get("/api/articles?order=ASC")
+        .expect(200)
+        .then((res) => {
+          const { articles } = res.body;
+          expect(articles).toBeSortedBy('created_at', { descending: false });
+        })
+    });
+    test('Sorts the data by votes given the sort_by query', () => {
+      return request(app)
+        .get("/api/articles?sort_by=votes")
+        .expect(200)
+        .then((res) => {
+          const { articles } = res.body;
+          expect(articles).toBeSortedBy('votes', { descending: true });
+        })
+    });
+    test('Sorts the data by votes given the comment_count query', () => {
+      return request(app)
+        .get("/api/articles?sort_by=comment_count")
+        .expect(200)
+        .then((res) => {
+          const { articles } = res.body;
+          expect(articles).toBeSortedBy('comment_count', { descending: true });
+        })
+    });
+    test('Returns a 400 for an invalid sort_by query', () => {
+      return request(app)
+        .get("/api/articles?sort_by=viral") //Non-existant query
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Invalid sort_by query");
+        })
+    });
+    test('Returns a 400 for an invalid order query', () => {
+      return request(app)
+        .get("/api/articles?order=SIDEWAYS") //Non-existant query
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Invalid order query");
+        })
+    })
+    test('Selects the articles if given a topic slug query', () => {
+      return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then((res) => {
+          const {articles} = res.body;
+          expect(articles).toHaveLength(11);
+          articles.forEach(article => {
+            expect(article.topic).toBe('mitch');
+          });
+        })
+    })
+    test('Returns a 404 for an invalid slug', () => {
+      return request(app)
+        .get("/api/articles?topic=INVALIDASCANBE")
+        .expect(404)
+        .then((res) => {
+          expect(res.body.msg).toBe("INVALIDASCANBE not found")
+        })
+    })
+    test('Returns a 200 if an existing topic gives an empty array', () => {
+      return request(app)
+        .get("/api/articles?topic=paper")
+        .expect(200)
+        .then((res) => {
+          expect(res.body.articles).toHaveLength(0);
+        })
+    })
   });
 });
 
@@ -150,20 +230,20 @@ describe('/api/articles/:article_id', () => {
     test('Return a 400 for an illformed body', () => {
       return request(app)
         .patch('/api/articles/1')
-        .send({inc_vote: 1}) // misspelling of inc_votes
+        .send({ inc_vote: 1 }) // misspelling of inc_votes
         .expect(400)
         .then((res) => {
-          const {msg} = res.body;
+          const { msg } = res.body;
           expect(msg).toBe("Ill-formed body");
         })
     });
     test('Return a 400 for a non-integer inc_votes', () => {
       return request(app)
         .patch('/api/articles/1')
-        .send({inc_votes: -1.99}) // Negative inc_votes
+        .send({ inc_votes: -1.99 }) // Negative inc_votes
         .expect(400)
         .then((res) => {
-          const {msg} = res.body;
+          const { msg } = res.body;
           expect(msg).toBe("inc_votes is not an integer");
         })
     });
