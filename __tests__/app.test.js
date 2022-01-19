@@ -320,6 +320,60 @@ describe('/api/articles/:article_id/comments', () => {
 });
 
 describe('/api/comments/:comment_id', () => {
+  describe('PATCH', () => {
+    test('Update a comment by incrementing its votes', () => {
+      return request(app)
+        .patch('/api/comments/1')
+        .send({ inc_votes: 1 })
+        .expect(200)
+        .then((res) => {
+          const { comment } = res.body;
+          expect(comment).toEqual({
+            comment_id: 1,
+            body: expect.any(String),
+            votes: 17, // Updated from 16
+            author: "butter_bridge",
+            article_id: 9,
+            created_at: expect.any(String)
+          });
+        })
+    });
+    test('Decrement the votes if given a negative number', () => {
+      return request(app)
+        .patch('/api/comments/1')
+        .send({ inc_votes: -1 })
+        .expect(200)
+        .then((res) => {
+          const { comment } = res.body;
+          expect(comment).toEqual({
+            comment_id: 1,
+            body: expect.any(String),
+            votes: 15, // Updated from 16
+            author: "butter_bridge",
+            article_id: 9,
+            created_at: expect.any(String)
+          });
+        })
+    });
+    test('Throw a 400 if the body is malformed', () => {
+      return request(app)
+        .patch('/api/comments/2')
+        .send({inc_vote: 1}) // Wrong variable
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Body does not have only one key of 'inc_votes'");
+        });
+    })
+    test('Throw a 400 if inc_votes is not an integer', () => {
+      return request(app)
+        .patch('/api/comments/2')
+        .send({inc_votes: 1.5})
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("inc_votes is not an integer");
+        });
+    });
+  });
   describe('DELETE', () => {
     test('Delete the given comment', () => {
       return request(app)
@@ -384,7 +438,7 @@ describe('/api/users/:user_id', () => {
         .get('/api/users/butter_bridge')
         .expect(200)
         .then((res) => {
-          const {user} = res.body;
+          const { user } = res.body;
           expect(user).toEqual({
             username: 'butter_bridge',
             name: 'jonny',
