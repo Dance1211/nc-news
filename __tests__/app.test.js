@@ -360,6 +360,19 @@ describe('/api/topics', () => {
 
 describe('/api/users', () => {
   describe('GET', () => {
-    
+    test('Returns the full array of users', () => {
+      return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then((res) => {
+          const { users } = res.body;
+          expect(users).toHaveLength(4);
+          users.forEach(user => {
+            expect(user).toEqual({
+              username: expect.any(String)
+            });
+          });
+        });
+    });
   });
 });

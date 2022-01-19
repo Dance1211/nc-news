@@ -1,5 +1,5 @@
 const { getSingleArticle, patchArticle, getArticles, getCommentsByArticleId, postCommentByArticleId } = require('../controllers/articles.controller');
-const { validateArticleId, validateId } = require('../middleware/validation');
+const { validateId } = require('../middleware/validation');
 
 const articlesRouter = require('express').Router();
 
