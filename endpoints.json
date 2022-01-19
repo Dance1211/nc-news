@@ -66,7 +66,7 @@
 			"comments": [
 				{
 					"comment_id": 63,
-					"votes": -1,
+					"votes": 0,
 					"created_at": "2020-08-12T22:10:00.000Z",
 					"author": "jessjelly",
 					"body": "Est pariatur quis ipsa culpa"
@@ -92,17 +92,52 @@
 			"body": "I'm not sure I agree with the author on this topic"
 		}
 	},
+	"PATCH /api/comments/:comment_id": {
+		"description": "increments the votes property of a comment with the given id",
+		"parameters": {
+			"comment_id":"positive integer"
+		},
+		"exampleBody": {
+			"inc_votes": 1
+		},
+		"exampleResponse": {
+			"comment_id": 63,
+			"votes": 1,
+			"created_at": "2020-08-12T22:10:00.000Z",
+			"author": "jessjelly",
+			"body": "Est pariatur quis ipsa culpa"
+		}
+	},
 	"DELETE /api/comments/:comment_id": {
-    "description": "Deletes the comment with the given ID. Returns 204 with no response body",
-    "parameter": {
-      "comment_id": "positive integer"
-    }
-  },
+		"description": "Deletes the comment with the given ID. Returns 204 with no response body",
+		"parameter": {
+			"comment_id": "positive integer"
+		}
+	},
 	"GET /api/topics": {
 		"description": "serves an array of all topics",
 		"queries": [],
 		"exampleResponse": {
 			"topics": [{ "slug": "football", "description": "Footie!" }]
+		}
+	},
+	"GET /api/users": {
+		"description": "Serves the full list of usernames in the database",
+		"exampleResponse": {
+			"users": ["FootieUser1", "xxGAMERXX", "Howard_The_Duck"]
+		}
+	},
+	"GET /api/users/:username": {
+		"description": "Servers the infomation about the user with the requested username",
+		"parameter": {
+			"username": "Existing username in database. Returns http status 404 otherwise"
+		},
+		"exampleResponse": {
+			"user": {
+				"username": "local_man",
+				"avatar_url": "https://avatar-storage.com/avatar/1902",
+				"name": "Thomas"
+			}
 		}
 	}
 }
