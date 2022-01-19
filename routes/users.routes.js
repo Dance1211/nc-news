@@ -1,18 +1,18 @@
-const { getUsers, getUserByUsername } = require('../controllers/users.controller');
-const { validateUsername } = require('../middleware/validation');
+const { getUsers, getUserByUsername } = require("../controllers/users.controller");
+const { validateUsername } = require("../middleware/validation");
 
-const usersRouter = require('express').Router();
+const usersRouter = require("express").Router();
 
 // api stuff here
 usersRouter
-  .use('/:username', validateUsername);
+	.use("/:username", validateUsername);
 
 usersRouter
-  .route('/')
-  .get(getUsers);
+	.route("/")
+	.get(getUsers);
 
 usersRouter
-  .route('/:username')
-  .get(getUserByUsername);
+	.route("/:username")
+	.get(getUserByUsername);
 
 module.exports = usersRouter;

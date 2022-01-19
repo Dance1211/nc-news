@@ -3,10 +3,10 @@ const commentsRouter = require("./comments.routes");
 const topicsRouter = require("./topics.routes");
 const usersRouter = require("./users.routes");
 const {
-  getEndpoints
-} = require("../controllers/api.controller")
+	getEndpoints
+} = require("../controllers/api.controller");
 
-const apiRouter = require('express').Router();
+const apiRouter = require("express").Router();
 
 
 // Sub routers

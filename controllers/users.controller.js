@@ -1,22 +1,22 @@
-const { selectUsers, selectUserByUsername } = require("../models/users.model")
+const { selectUsers, selectUserByUsername } = require("../models/users.model");
 
 module.exports.getUsers = (req, res, next) => {
-  selectUsers()
-    .then((users) => {
-      res.status(200).send({users});
-    })
-    .catch((err) => {
-      next(err);
-    })
-}
+	selectUsers()
+		.then((users) => {
+			res.status(200).send({users});
+		})
+		.catch((err) => {
+			next(err);
+		});
+};
 
 module.exports.getUserByUsername = (req, res, next) => {
-  const {username} = req.params;
-  selectUserByUsername(username)
-    .then((user) => {
-      res.status(200).send({user});
-    })
-    .catch((err) => {
-      next(err);
-    })
-}
+	const {username} = req.params;
+	selectUserByUsername(username)
+		.then((user) => {
+			res.status(200).send({user});
+		})
+		.catch((err) => {
+			next(err);
+		});
+};

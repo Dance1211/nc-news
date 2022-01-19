@@ -4,12 +4,12 @@
  * @returns True if the parameter is a valid positive integer, false otherwise
  */
 module.exports.isValidPositiveInteger = (str) => {
-  try {
-    return /^[1-9]\d*$/.test(str); 
-  } catch (error) {
-    return false;
-  }
-}
+	try {
+		return /^[1-9]\d*$/.test(str); 
+	} catch (error) {
+		return false;
+	}
+};
 
 /**
  * Check if an object has a single property of prop with a given type 
@@ -19,11 +19,11 @@ module.exports.isValidPositiveInteger = (str) => {
  * @returns True if the object is valid, false otherwise
  */
 module.exports.hasSpecificPropertyOnly = (obj, prop, constructor = Object) => {
-  // Check there's only one key and that it's inc_votes;
-  try {
-    const keys = Object.keys(obj);
-    return (keys.length === 1 && obj[prop].constructor === constructor);
-  } catch (error) {
-    return false;
-  }
-}
+	// Check there's only one key and that it's inc_votes;
+	try {
+		const keys = Object.keys(obj);
+		return (keys.length === 1 && obj[prop].constructor === constructor);
+	} catch (error) {
+		return false;
+	}
+};

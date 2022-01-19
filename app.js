@@ -1,11 +1,11 @@
 const express = require("express");
 const apiRouter = require("./routes/api.routes");
 const app = express();
-const errors = require('./middleware/errors');
+const errors = require("./middleware/errors");
 
 app.use(express.json());
 
-app.use('/api', apiRouter);
+app.use("/api", apiRouter);
 
 // Handle errors
 app.use(errors.serverError);
