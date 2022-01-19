@@ -422,9 +422,7 @@ describe('/api/users', () => {
           const { users } = res.body;
           expect(users).toHaveLength(4);
           users.forEach(user => {
-            expect(user).toEqual({
-              username: expect.any(String)
-            });
+            expect(user).toEqual(expect.any(String));
           });
         });
     });

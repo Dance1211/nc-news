@@ -5,7 +5,7 @@ module.exports.selectUsers = async () => {
     const users = await db.query(`
       SELECT username FROM users;
     `)
-    return users.rows;
+    return users.rows.map(({username}) => username);
   } catch (err) {
     return Promise.reject(err)
   }
