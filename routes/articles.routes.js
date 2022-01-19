@@ -1,5 +1,5 @@
-const { getSingleArticle, patchArticle, getArticles, getCommentsByArticleId, postCommentByArticleId } = require('../controllers/articles.controllers');
-const { validateArticleId } = require('../middleware/validation');
+const { getSingleArticle, patchArticle, getArticles, getCommentsByArticleId, postCommentByArticleId } = require('../controllers/articles.controller');
+const { validateArticleId, validateId } = require('../middleware/validation');
 
 const articlesRouter = require('express').Router();
 
@@ -7,7 +7,7 @@ const articlesRouter = require('express').Router();
 
 // Throw a 400 error for invalid article_id formats
 articlesRouter
-  .use('/:article_id', validateArticleId) 
+  .use('/:article_id', validateId("article_id")) 
 
 articlesRouter
   .route('/')

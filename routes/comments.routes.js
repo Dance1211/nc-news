@@ -1,11 +1,11 @@
 const { deleteComment } = require('../controllers/comments.controller');
-const { validateCommentId } = require('../middleware/validation');
+const { validateId } = require('../middleware/validation');
 
 const commentsRouter = require('express').Router();
 
 // api stuff here
 commentsRouter
-  .use('/:comment_id', validateCommentId);
+  .use('/:comment_id', validateId("comment_id"));
 
 commentsRouter
   .route('/:comment_id')

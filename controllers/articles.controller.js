@@ -1,4 +1,4 @@
-const { selectSingleArticle, updateArticleVotes, selectArticles, selectCommentsByArticleId, insertCommentByArticleId } = require("../models/articles.models");
+const { selectSingleArticle, updateArticleVotes, selectArticles, selectCommentsByArticleId, insertCommentByArticleId } = require("../models/articles.model");
 const { isValidPositiveInteger, hasSpecificPropertyOnly } = require("../util/validation");
 
 

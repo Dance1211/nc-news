@@ -174,7 +174,7 @@ describe('/api/articles/:article_id', () => {
         .expect(400)
         .then((res) => {
           const { msg } = res.body;
-          expect(msg).toBe("Invalid article id");
+          expect(msg).toBe("Invalid article_id");
         });
     });
     test('Return a 404 for a valid id format but not in database', () => {
@@ -214,7 +214,7 @@ describe('/api/articles/:article_id', () => {
         .expect(400)
         .then((res) => {
           const { msg } = res.body;
-          expect(msg).toBe("Invalid article id");
+          expect(msg).toBe("Invalid article_id");
         });
     });
     test('Return a 404 for a valid id format but not in database', () => {
@@ -357,3 +357,9 @@ describe('/api/topics', () => {
     })
   });
 })
+
+describe('/api/users', () => {
+  describe('GET', () => {
+    
+  });
+});
