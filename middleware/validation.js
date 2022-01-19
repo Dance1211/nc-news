@@ -14,10 +14,10 @@ module.exports.validateId = (key) => {
     const keyWithout_ID = key.slice(0, -3); // Remove "_id" at end of key
     const table = keyWithout_ID + "s"; // Make it plural
     if (!isValidPositiveInteger(id)) {
-      next({status: 400, msg: `Invalid ${key}`})
+      next({ status: 400, msg: `Invalid ${key}` })
     } else {
       checkExists(require('../db/connection'), table, key, id,
-      `${keyWithout_ID[0].toUpperCase() + keyWithout_ID.slice(1)} not found`)
+        `${keyWithout_ID[0].toUpperCase() + keyWithout_ID.slice(1)} not found`)
         .then(() => {
           next();
         })
@@ -26,4 +26,16 @@ module.exports.validateId = (key) => {
         })
     }
   }
+}
+
+module.exports.validateUsername = (req, res, next) => {
+  const { username } = req.params;
+  checkExists(require('../db/connection'), "users", "username",
+    req.params.username, `User ${username} not found`)
+    .then(() => {
+      next();
+    })
+    .catch((err) => {
+      next(err);
+    })
 }
