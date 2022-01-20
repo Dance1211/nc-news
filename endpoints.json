@@ -4,7 +4,13 @@
 	},
 	"GET /api/articles": {
 		"description": "serves an array of all topics",
-		"queries": ["topic", "sort_by", "order"],
+		"queries": {
+			"topic": "Articles relating to a given topic (See GET /api/topics",
+			"sort_by": "Sorts the articles in order of the given property. Defaults to created_at",
+			"order": "[asc] or [desc]. Orders the articles in that order",
+			"p": "Current page of articles. Defaults to page 1",
+			"limit": "Number of articles returned per call. Defaults to 10"
+		},
 		"exampleResponse": {
 			"articles": [
 				{
