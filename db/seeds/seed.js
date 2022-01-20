@@ -45,8 +45,8 @@ const seed = async (data) => {
       article_id SERIAL PRIMARY KEY,
       title VARCHAR(${ARTICLE_TITLE_LENGTH}) NOT NULL,
       body TEXT NOT NULL, 
-      topic VARCHAR(${TOPIC_SLUG_LENGTH}) REFERENCES topics(slug),
-      author VARCHAR(${USER_USERNAME_LENGTH}) REFERENCES users(username),
+      topic VARCHAR(${TOPIC_SLUG_LENGTH}) REFERENCES topics(slug) ON DELETE SET NULL,
+      author VARCHAR(${USER_USERNAME_LENGTH}) REFERENCES users(username) ON DELETE CASCADE,
       votes INT DEFAULT 0,
       created_at TIMESTAMP DEFAULT Now()
     )
@@ -55,8 +55,8 @@ const seed = async (data) => {
     CREATE TABLE comments(
       comment_id SERIAL PRIMARY KEY,
       body VARCHAR(${COMMENT_BODY_LENGTH}) NOT NULL,
-      author VARCHAR(${USER_USERNAME_LENGTH}) REFERENCES users(username) ON DELETE CASCADE,
-      article_id INT REFERENCES articles(article_id),
+      author VARCHAR(${USER_USERNAME_LENGTH}) REFERENCES users(username) ON DELETE SET NULL,
+      article_id INT REFERENCES articles(article_id) ON DELETE CASCADE,
       votes INT DEFAULT 0,
       created_at TIMESTAMP DEFAULT Now()
     )
