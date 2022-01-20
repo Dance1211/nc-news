@@ -1,4 +1,4 @@
-const { selectSingleArticle, updateArticleVotes, selectArticles, selectCommentsByArticleId, insertCommentByArticleId } = require("../models/articles.model");
+const { selectSingleArticle, updateArticleVotes, selectArticles, selectCommentsByArticleId, insertCommentByArticleId, insertArticle } = require("../models/articles.model");
 const { hasSpecificPropertyOnly, isValidPositiveInteger } = require("../util/validation");
 
 
@@ -34,6 +34,20 @@ module.exports.getArticles = (req, res, next) => {
 			next(err);
 		});
 };
+
+module.exports.postArticle = (req, res, next) => {
+	const {author, title, body, topic} = req.body;
+	if (!author || !title || !body || !topic || Object.keys(req.body).length !== 4) {
+		next({status: 400, msg: "Malformed body"});
+	}
+	insertArticle(req.body)
+		.then((article) => {
+			res.status(201).send({article});
+		})
+		.catch((err) => {
+			next(err);
+		})
+}
 
 module.exports.getSingleArticle = (req, res, next) => {
 	const { article_id } = req.params;

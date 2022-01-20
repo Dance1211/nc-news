@@ -8,7 +8,7 @@ beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
 describe("/api/notAnEndpoint", () => {
-	describe('ALL', () => {
+	describe("ALL", () => {
 		test("Return a 404 for a non-existant endpoint", () => {
 			return request(app)
 				.get("/api/notAnEndpoint")
@@ -172,6 +172,68 @@ describe("/api/articles", () => {
 					const {articles} = res.body;
 					expect(articles).toHaveLength(3);
 				});
+		});
+	});
+	describe("POST", () => {
+		test("Publish the article and return a copy of the new article entry", () => {
+			const newArticleInfo = {
+				author: "lurker",
+				title: "My first post",
+				body: "Check out my new paper website >w>;;;; https://shadylink.co.az",
+				topic: "paper"
+			}
+			return request(app)
+				.post("/api/articles")
+				.send(newArticleInfo)
+				.expect(201)
+				.then((res) => {
+					const {article} = res.body;
+					expect(article).toEqual({
+						...newArticleInfo,
+						article_id: 13,
+						votes: 0,
+						created_at: expect.any(String),
+						comment_count: 0
+					})
+				})
+		});
+		test("Return a 404 for a non-existing username", () => {
+			const newArticleInfo = {
+				author: "lurkerBrother",
+				title: "My first post",
+				body: "Check out my new paper website owo;;;; https://shadierlink.co.az",
+				topic: "paper"
+			}
+			return request(app)
+				.post("/api/articles")
+				.send(newArticleInfo)
+				.expect(404);
+		});
+		test("Return a 404 for a non-existing topic", () => {
+			const newArticleInfo = {
+				author: "lurker",
+				title: "My second post",
+				body: "Check out my new tissue paper website uwu;;;; https://shadierlink.co.az",
+				topic: "tissuepaper"
+			}
+			return request(app)
+				.post("/api/articles")
+				.send(newArticleInfo)
+				.expect(404);
+		});
+		test("Return a 400 for a malformed body", () => {
+			const newArticleInfo = {
+				author: "lurker",
+				title: "My third post on the topic of paper",
+				body: "Check out my new tissue paper website :3 https://shadiestlink.co.az/pleaseClickAlready",
+			}
+			return request(app)
+				.post("/api/articles")
+				.send(newArticleInfo)
+				.expect(400)
+				.then((res) => {
+					expect(res.body.msg).toEqual("Malformed body");
+				})
 		});
 	});
 });

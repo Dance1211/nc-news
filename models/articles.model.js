@@ -77,3 +77,21 @@ module.exports.insertCommentByArticleId = async (article_id, username, body) => 
   return comment.rows[0];
 };
 
+module.exports.insertArticle = async (newArticle) => {
+  const { author, title, body, topic } = newArticle;
+
+  // Run these validations first before committing to a query.
+  await Promise.all([
+    checkExists(db, "users", "username", author, `User ${author} not found`),
+    checkExists(db, "topics", "slug", topic, `Topic ${topic} not found`)
+  ])
+
+  const article = await db.query(`
+    INSERT INTO articles
+      (author, title, body, topic)
+    VALUES ($1, $2, $3, $4)
+    RETURNING *;
+  `, [author, title, body, topic])
+  article.rows[0].comment_count = 0; // Default value, no need to query again.
+  return article.rows[0];
+}
