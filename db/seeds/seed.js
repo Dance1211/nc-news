@@ -16,11 +16,8 @@ const seed = async (data) => {
 	/*
   * Table Heirarchy:
   * 1 TOPIC, USER
-  * 2 ARTICLE
-  * 3 COMMENT
-  * 
-  * TODO: 
-  * POPULATE TABLES
+  * 2 ARTICLE (References TOPIC, USER)
+  * 3 COMMENT (References ARTICLE, USER)
   */
 
 	// Drop all tables in order.
@@ -34,7 +31,7 @@ const seed = async (data) => {
     CREATE TABLE users(
       username VARCHAR(${USER_USERNAME_LENGTH}) PRIMARY KEY,
       avatar_url VARCHAR(${USER_AVATAR_URL_LENGTH}),
-      name VARCHAR(${USER_NAME_LENGTH})
+      name VARCHAR(${USER_NAME_LENGTH}) NOT NULL
     )
   `);
 	await db.query(`
@@ -47,7 +44,7 @@ const seed = async (data) => {
     CREATE TABLE articles(
       article_id SERIAL PRIMARY KEY,
       title VARCHAR(${ARTICLE_TITLE_LENGTH}) NOT NULL,
-      body TEXT,
+      body TEXT NOT NULL, 
       topic VARCHAR(${TOPIC_SLUG_LENGTH}) REFERENCES topics(slug),
       author VARCHAR(${USER_USERNAME_LENGTH}) REFERENCES users(username),
       votes INT DEFAULT 0,
@@ -57,7 +54,7 @@ const seed = async (data) => {
 	await db.query(`
     CREATE TABLE comments(
       comment_id SERIAL PRIMARY KEY,
-      body VARCHAR(${COMMENT_BODY_LENGTH}),
+      body VARCHAR(${COMMENT_BODY_LENGTH}) NOT NULL,
       author VARCHAR(${USER_USERNAME_LENGTH}) REFERENCES users(username) ON DELETE CASCADE,
       article_id INT REFERENCES articles(article_id),
       votes INT DEFAULT 0,

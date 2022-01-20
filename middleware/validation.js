@@ -28,6 +28,7 @@ module.exports.validateId = (key) => {
 	};
 };
 
+// Checks the database that the requested username exists before continuing with other queries.
 module.exports.validateUsername = (req, res, next) => {
 	const { username } = req.params;
 	checkExists(require("../db/connection"), "users", "username",
