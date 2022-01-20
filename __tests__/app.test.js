@@ -8,21 +8,31 @@ beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
 describe("/api/notAnEndpoint", () => {
-	test("Return a 404 for a non-existant endpoint", () => {
-		return request(app)
-			.get("/api/notAnEndpoint")
-			.expect(404)
-			.then((res) => {
-				expect(res.body.msg).toBe("Endpoint '/api/notAnEndpoint' does not exist");
-			});
-	});
-	test("Ignores the query part of the URL in the response", () => {
-		return request(app)
-			.get("/api/notAnEndpoint?isIgnored=true")
-			.expect(404)
-			.then((res) => {
-				expect(res.body.msg).toBe("Endpoint '/api/notAnEndpoint' does not exist");
-			});
+	describe('ALL', () => {
+		test("Return a 404 for a non-existant endpoint", () => {
+			return request(app)
+				.get("/api/notAnEndpoint")
+				.expect(404)
+				.then((res) => {
+					expect(res.body.msg).toBe("Endpoint '/api/notAnEndpoint' does not exist");
+				});
+		});
+		test("Ignores the query part of the URL in the response", () => {
+			return request(app)
+				.get("/api/notAnEndpoint?isIgnored=true")
+				.expect(404)
+				.then((res) => {
+					expect(res.body.msg).toBe("Endpoint '/api/notAnEndpoint' does not exist");
+				});
+		});
+		test("Return a 404 for another request method", () => {
+			return request(app)
+				.patch("/api/notAnEndpoint")
+				.expect(404)
+				.then((res) => {
+					expect(res.body.msg).toBe("Endpoint '/api/notAnEndpoint' does not exist");
+				});
+		});
 	});
 });
 
@@ -47,7 +57,7 @@ describe("/api/articles", () => {
 	describe("GET", () => {
 		test("Returns all the article objects wtih status 200", () => {
 			return request(app)
-				.get("/api/articles")
+				.get("/api/articles?limit=100") // Have to query to get all articles
 				.expect(200)
 				.then((res) => {
 					const { articles } = res.body;
@@ -119,7 +129,7 @@ describe("/api/articles", () => {
 		});
 		test("Selects the articles if given a topic slug query", () => {
 			return request(app)
-				.get("/api/articles?topic=mitch")
+				.get("/api/articles?topic=mitch&limit=100") // Have to query limit to get all articles
 				.expect(200)
 				.then((res) => {
 					const { articles } = res.body;
@@ -143,6 +153,24 @@ describe("/api/articles", () => {
 				.expect(200)
 				.then((res) => {
 					expect(res.body.articles).toHaveLength(0);
+				});
+		});
+		test("Querying with page 2 limit 10 will return 2 articles", () => {
+			return request(app)
+				.get("/api/articles?p=2")
+				.expect(200)
+				.then((res) => {
+					const {articles} = res.body;
+					expect(articles).toHaveLength(2) //First page has 10, second page has 2
+				});
+		});
+		test("Querying with page 3, limit 3 will return 3 articles", () => {
+			return request(app)
+				.get("/api/articles?limit=3&p=3")
+				.expect(200)
+				.then((res) => {
+					const {articles} = res.body;
+					expect(articles).toHaveLength(3);
 				});
 		});
 	});
