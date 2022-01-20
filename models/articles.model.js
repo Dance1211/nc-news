@@ -9,7 +9,7 @@ module.exports.selectArticles = async ({ sort_by = "created_at", order = "DESC",
 	if (!validSortBy.includes(sort_by)) {
 		return Promise.reject({ status: 400, msg: "Invalid sort_by query" });
 	}
-	if (!validOrder.includes(order)) {
+	if (!validOrder.includes(order.toUpperCase())) {
 		return Promise.reject({ status: 400, msg: "Invalid order query" });
 	}
 
