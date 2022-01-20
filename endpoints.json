@@ -23,6 +23,28 @@
 			]
 		}
 	},
+
+	"POST /api/articles": {
+		"description": "Posts a new article to the database, filling in the meta-data automatically",
+		"exampleBody": {
+			"author": "lurker",
+			"title": "My first post",
+			"body": "Check out my new paper website >w>;;;; https://shadylink.co.az",
+			"topic": "paper"
+		},
+		"exampleResponse": {
+			"article": {
+				"author": "lurker",
+				"title": "My first post",
+				"body": "Check out my new paper website >w>;;;; https://shadylink.co.az",
+				"topic": "paper",
+				"article_id": 13,
+				"votes": 0,
+				"created_at": "2020-07-09T20:11:00.000Z",
+				"comment_count": 0
+			}
+		}
+	},
 	"GET /api/articles/:article_id": {
 		"description": "serves a single article object with the given id",
 		"parameter": {
@@ -101,7 +123,7 @@
 	"PATCH /api/comments/:comment_id": {
 		"description": "increments the votes property of a comment with the given id",
 		"parameters": {
-			"comment_id":"positive integer"
+			"comment_id": "positive integer"
 		},
 		"exampleBody": {
 			"inc_votes": 1
