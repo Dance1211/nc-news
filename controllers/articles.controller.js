@@ -3,6 +3,18 @@ const { hasSpecificPropertyOnly } = require("../util/validation");
 
 
 module.exports.getArticles = (req, res, next) => {
+	const {sort_by = "created_at", order = "DESC"} = req.query;
+
+	// Validate queries via whitelist
+	const validSortBy = ["author", "title", "article_id", "topic", "created_at", "votes", "comment_count"];
+	const validOrder = ["ASC", "DESC"];
+	if (!validSortBy.includes(sort_by)) {
+		next({ status: 400, msg: "Invalid sort_by query" });
+	}
+	if (!validOrder.includes(order.toUpperCase())) {
+		next({ status: 400, msg: "Invalid order query" });
+	}
+
 	selectArticles(req.query)
 		.then((articles) => {
 			res.status(200).send({ articles });

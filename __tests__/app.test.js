@@ -285,7 +285,7 @@ describe("/api/articles/:article_id/comments", () => {
 			return request(app)
 				.post("/api/articles/1/comments")
 				.send({ username: "rogersop", body: "Yo. I want to make a post" })
-				.expect(200)
+				.expect(201)
 				.then((res) => {
 					const { comment } = res.body;
 					expect(comment).toEqual({
