@@ -149,6 +149,19 @@
 			"topics": [{ "slug": "football", "description": "Footie!" }]
 		}
 	},
+	"POST /api/topics": {
+		"description": "Creates a new topic with a shorthand slug identifier and a description. Returns a copy of request body from the server to confirm it has been successful",
+		"exampleBody": {
+			"slug": "nfl",
+			"description": "Latest in NFL news and updates"
+		},
+		"exampleResponse": {
+			"topic": {
+				"slug": "nfl",
+				"description": "Latest in NFL news and updates"
+			}
+		}
+	},
 	"GET /api/users": {
 		"description": "Serves the full list of usernames in the database",
 		"exampleResponse": {

@@ -8,16 +8,18 @@ This project uses an node / express.js backend to serve infomation from a PSQL d
 
 The list of currently available endpoints can be found here:
 
-    GET /api/
-    GET /api/articles/
-    GET /api/articles/:article_id
-    PATCH /api/articles/:article_id
-    GET /api/artciles/:article_id/comments
-    POST /api/articles/:article_id/comments
-    PATCH /api/comments/:comment_id
-    DELETE /api/comments/:comment_id
-    GET /api/users
-    GET /api/users/:username
+    GET     /api/
+    GET     /api/articles/
+    GET     /api/articles/:article_id
+    PATCH   /api/articles/:article_id
+    GET     /api/artciles/:article_id/comments
+    POST    /api/articles/:article_id/comments
+    PATCH   /api/comments/:comment_id
+    DELETE  /api/comments/:comment_id
+    GET     /api/topics
+    POST    /api/topics
+    GET     /api/users
+    GET     /api/users/:username
 
 ## Installation
 Ensure you have NodeJS at `npm@^16.0.0` and Postgres v12.9

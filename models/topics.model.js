@@ -6,3 +6,13 @@ module.exports.selectTopics = async () => {
   `);
 	return topics.rows;
 };
+
+module.exports.insertTopic = async (slug, description) => {
+  const topic = await db.query(`
+    INSERT INTO topics
+    (slug, description)
+    VALUES ($1, $2)
+    RETURNING *;
+  `, [slug, description])
+  return topic.rows[0];
+}

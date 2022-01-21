@@ -160,7 +160,7 @@ describe("/api/articles", () => {
 				.get("/api/articles?p=2")
 				.expect(200)
 				.then((res) => {
-					const {articles} = res.body;
+					const { articles } = res.body;
 					expect(articles).toHaveLength(2) //First page has 10, second page has 2
 				});
 		});
@@ -169,7 +169,7 @@ describe("/api/articles", () => {
 				.get("/api/articles?limit=3&p=3")
 				.expect(200)
 				.then((res) => {
-					const {articles} = res.body;
+					const { articles } = res.body;
 					expect(articles).toHaveLength(3);
 				});
 		});
@@ -187,7 +187,7 @@ describe("/api/articles", () => {
 				.send(newArticleInfo)
 				.expect(201)
 				.then((res) => {
-					const {article} = res.body;
+					const { article } = res.body;
 					expect(article).toEqual({
 						...newArticleInfo,
 						article_id: 13,
@@ -448,7 +448,7 @@ describe("/api/comments/:comment_id", () => {
 		test("Throw a 400 if the body is malformed", () => {
 			return request(app)
 				.patch("/api/comments/2")
-				.send({inc_vote: 1}) // Wrong variable
+				.send({ inc_vote: 1 }) // Wrong variable
 				.expect(400)
 				.then((res) => {
 					expect(res.body.msg).toBe("Body does not have only one key of 'inc_votes'");
@@ -457,7 +457,7 @@ describe("/api/comments/:comment_id", () => {
 		test("Throw a 400 if inc_votes is not an integer", () => {
 			return request(app)
 				.patch("/api/comments/2")
-				.send({inc_votes: 1.5})
+				.send({ inc_votes: 1.5 })
 				.expect(400)
 				.then((res) => {
 					expect(res.body.msg).toBe("inc_votes is not an integer");
@@ -497,6 +497,34 @@ describe("/api/topics", () => {
 							description: expect.any(String)
 						});
 					});
+				});
+		});
+	});
+	describe("POST", () => {
+		test('Creates a new topic for the database, returning the created topic', () => {
+			const topic = { slug: "racing", description: "Vroom Vroom!" };
+			return request(app)
+				.post("/api/topics")
+				.send(topic)
+				.expect(201)
+				.then((res) => {
+					expect(res.body.topic).toEqual(topic);
+					return request(app)
+						.get("/api/topics")
+						.expect(200)
+						.then((res) => {
+							const { topics } = res.body;
+							expect(topics).toHaveLength(4); // Previously 3
+						});
+				});
+		});
+		test("Return a 400 for a malformed body", () => {
+			return request(app)
+				.post("/api/topics")
+				.send({topic: "generalfun", description: "We have a good time"}) // slug not a key
+				.expect(400)
+				.then((res) => {
+					expect(res.body.msg).toBe("Malformed body");
 				});
 		});
 	});
