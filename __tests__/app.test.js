@@ -338,6 +338,26 @@ describe("/api/articles/:article_id", () => {
 				});
 		});
 	});
+
+	describe("DELETE", () => {
+		test("Deletes the article of the given ID, returning a 204 status", () => {
+			return request(app)
+				.delete("/api/articles/1")
+				.expect(204)
+				.then(() => {
+					return request(app)
+						.get("/api/articles?sort_by=article_id&order=asc&limit=100")
+						.expect(200)
+						.then((res) => {
+							const { articles } = res.body;
+							expect(articles).toHaveLength(11);
+							articles.forEach((article) => {
+								expect(article.article_id).not.toBe(1);
+							})
+						});
+				});
+		});
+	});
 });
 
 describe("/api/articles/:article_id/comments", () => {
@@ -521,7 +541,7 @@ describe("/api/topics", () => {
 		test("Return a 400 for a malformed body", () => {
 			return request(app)
 				.post("/api/topics")
-				.send({topic: "generalfun", description: "We have a good time"}) // slug not a key
+				.send({ topic: "generalfun", description: "We have a good time" }) // slug not a key
 				.expect(400)
 				.then((res) => {
 					expect(res.body.msg).toBe("Malformed body");

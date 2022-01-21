@@ -54,6 +54,14 @@ module.exports.updateArticleVotes = async (article_id, inc_votes) => {
   return article.rows[0];
 };
 
+module.exports.removeArticle = async (article_id) => {
+  await db.query(`
+    DELETE FROM articles
+    WHERE article_id = $1;
+  `, [article_id]);
+  return;
+};
+
 module.exports.selectCommentsByArticleId = async (article_id) => {
   const comments = await db.query(`
     SELECT comment_id, votes, created_at, author, body
@@ -94,4 +102,4 @@ module.exports.insertArticle = async (newArticle) => {
   `, [author, title, body, topic])
   article.rows[0].comment_count = 0; // Default value, no need to query again.
   return article.rows[0];
-}
+};

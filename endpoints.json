@@ -85,6 +85,12 @@
 			}
 		}
 	},
+	"DELETE /api/articles/:article_id": {
+		"description": "deletes the article with the given id as well as all the comments associated with it. Returns a 204 and no body if successful",
+		"parameter": {
+			"article_id":"positive integer"
+		}
+	},
 	"GET /api/articles/:article_id/comments": {
 		"description": "serves all the comments associated with the given article_id",
 		"parameter": {

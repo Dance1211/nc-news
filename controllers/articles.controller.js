@@ -1,4 +1,4 @@
-const { selectSingleArticle, updateArticleVotes, selectArticles, selectCommentsByArticleId, insertCommentByArticleId, insertArticle } = require("../models/articles.model");
+const { selectSingleArticle, updateArticleVotes, selectArticles, selectCommentsByArticleId, insertCommentByArticleId, insertArticle, removeArticle } = require("../models/articles.model");
 const { hasSpecificPropertyOnly, isValidPositiveInteger } = require("../util/validation");
 
 
@@ -8,7 +8,7 @@ module.exports.getArticles = (req, res, next) => {
 		order = "DESC",
 		p = 1,
 		limit = 10,
-		} = req.query;
+	} = req.query;
 
 	// Validate queries via whitelist
 	const validSortBy = ["author", "title", "article_id", "topic", "created_at", "votes", "comment_count"];
@@ -17,13 +17,13 @@ module.exports.getArticles = (req, res, next) => {
 		next({ status: 400, msg: "Invalid sort_by query" });
 	}
 	if (!validOrder.includes(order.toUpperCase())) {
-		next({ status: 400, msg: "Invalid order query"});
+		next({ status: 400, msg: "Invalid order query" });
 	}
 	if (!isValidPositiveInteger(p)) {
-		next({status: 400, msg: "Invalid (p)age query"})
+		next({ status: 400, msg: "Invalid (p)age query" })
 	}
 	if (!isValidPositiveInteger(limit)) {
-		next({status: 400, msg: "Invalid limit query"})
+		next({ status: 400, msg: "Invalid limit query" })
 	}
 
 	selectArticles(req.query)
@@ -36,13 +36,13 @@ module.exports.getArticles = (req, res, next) => {
 };
 
 module.exports.postArticle = (req, res, next) => {
-	const {author, title, body, topic} = req.body;
+	const { author, title, body, topic } = req.body;
 	if (!author || !title || !body || !topic || Object.keys(req.body).length !== 4) {
-		next({status: 400, msg: "Malformed body"});
+		next({ status: 400, msg: "Malformed body" });
 	}
 	insertArticle(req.body)
 		.then((article) => {
-			res.status(201).send({article});
+			res.status(201).send({ article });
 		})
 		.catch((err) => {
 			next(err);
@@ -80,6 +80,15 @@ module.exports.patchArticle = (req, res, next) => {
 				next(err);
 			});
 	}
+};
+
+module.exports.deleteArticle = (req, res, next) => {
+	const { article_id } = req.params;
+	removeArticle(article_id)
+		.then(() => {
+			res.status(204).send();
+		})
+		.catch(next);
 };
 
 module.exports.getCommentsByArticleId = (req, res, next) => {
